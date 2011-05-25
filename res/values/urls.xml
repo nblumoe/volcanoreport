@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="urlWeeklyReport">http://www.volcano.si.edu/news/WeeklyVolcanoRSS.xml</string>
+    <string name="urlHoloceneVolcanoes">http://www.volcano.si.edu/ge/GVPWorldVolcanoes-List.kmz</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Volcano Report</string>
+    <string name="usgs_copyright">based on the Smithsonian / USGS Weekly Volcanic Activity Report</string>
+    <string name="date_format">yyyy-MM-dd HH:mm:ss.SSSZ</string>
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="localWeeklyReport">/data/data/com.nbapps.volcanoreport/WeeklyVolcanoRSS.xml</string>
+    <string name="localHoloceneVolcanoesZipped">/data/data/com.nbapps.volcanoreport/GVPWorldVolcanoes-List.kmz</string>
+    <string name="localHoloceneVolcanoesUnzipped">/data/data/com.nbapps.volcanoreport/GVPWorldVolcanoes-List.kml</string>
+</resources>
