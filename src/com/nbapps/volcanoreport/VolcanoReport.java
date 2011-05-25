@@ -81,15 +81,11 @@ public class VolcanoReport extends MapActivity {
          * 
          * TODO: implement menu with map settings, about dialog, copyright
          * 
-         * TODO: check package name, compare with other apps
-         * 
          * TODO: implement list view
          * 
          * TODO: implement donation
          * 
          * TODO: create logos and screenshots
-         * 
-         * TODO: rethink name?
          * 
          * TODO: implement earthquakes?
          *  
@@ -98,7 +94,7 @@ public class VolcanoReport extends MapActivity {
 
 
         downloadVolcanoLists();
-		updateVolcanoList();
+		updateVolcanoLists();
 		updateOverlay();
 
 	}
@@ -158,7 +154,7 @@ public class VolcanoReport extends MapActivity {
 		}.start();
     }
     
-	private void updateVolcanoList() {
+	private void updateVolcanoLists() {
 		updateWeeklyVolcanoList();
 		//updateHoloceneVolcanoList();
 	}
