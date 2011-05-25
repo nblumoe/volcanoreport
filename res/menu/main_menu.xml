@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/options" android:title="@string/options">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/mapmode_satellite" android:title="@string/satellite"></item>
+                <item android:id="@+id/mapmode_map" android:title="@string/map"></item>
+            </group>
+        </menu>
+    </item>
+    <item android:id="@+id/about" android:title="@string/about"></item>
+    <item android:id="@+id/support_it" android:title="@string/support_it"></item>
+</menu>

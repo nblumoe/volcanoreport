@@ -22,6 +22,9 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -50,7 +53,8 @@ public class VolcanoReport extends MapActivity {
         
         /*
          * load preferences
-         */
+        */
+        
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         try {
 			Date localWeeklyReportDate = new SimpleDateFormat().parse(preferences.getString("localWeeklyReportDate", "0"));
@@ -70,15 +74,17 @@ public class VolcanoReport extends MapActivity {
         mapOverlays = mapView.getOverlays();
         weeklyOverlay = new VolcanoOverlay(volcanoIcon, this);
         
-         /*TODO: re-implement holocene volcanoes
+         /*
+          * TODO: check for valid local kml file, start update if new file is available, this should replace firstStart checke 
+          * TODO: store map mode in preferences
+          * 
+          * TODO: re-implement holocene volcanoes
          * 
          * TODO: new icon for volcanoes with new unrest
          * 
          * TODO: change back to kml and use WebView.loadData() for description
          *        -> link
-         *        
-         * TODO: check for valid local kml file, start update if new file is available
-         * 
+         *  
          * TODO: implement menu with map settings, about dialog, copyright
          * 
          * TODO: implement list view
@@ -104,6 +110,29 @@ public class VolcanoReport extends MapActivity {
     	return false;
     }
     
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+    	MenuInflater inflater = getMenuInflater();
+    	inflater.inflate(R.menu.main_menu, menu);
+    	return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem){
+    	switch(menuItem.getItemId()) {
+    	case R.id.about:
+    		return true;
+    	case R.id.mapmode_map:
+            mapView.setSatellite(false);            
+    		return true;
+    	case R.id.mapmode_satellite:
+            mapView.setSatellite(true);
+    		return true;
+		case R.id.support_it:
+			return true;
+		default:
+			return super.onOptionsItemSelected(menuItem);
+    	}    	    	
+    }
     private void downloadVolcanoLists() {
     	downloadWeeklyVolcanoList();
     	//downloadHoloceneVolcanoList();
@@ -112,9 +141,13 @@ public class VolcanoReport extends MapActivity {
     private void downloadWeeklyVolcanoList() {
 		// start new thread to download weekly report
 		if (firstStart == true) {
-			new ListDownloader().DownloadFromUrl(
-					getResources().getString(R.string.urlWeeklyReport),
-					getResources().getString(R.string.localWeeklyReport));
+			try {
+				new ListDownloader().DownloadFromUrl(
+						getResources().getString(R.string.urlWeeklyReport),
+						getResources().getString(R.string.localWeeklyReport));
+			} catch (Exception e) {
+				Log.d("VOLCANO_DEBUG", "Exception: " + e);
+			}
 			SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 			SharedPreferences.Editor editor = preferences.edit();
 			editor.putString("localWeeklyReportDate",

@@ -3,4 +3,10 @@
     <string name="app_name">Volcano Report</string>
     <string name="usgs_copyright">based on the Smithsonian / USGS Weekly Volcanic Activity Report</string>
     <string name="date_format">yyyy-MM-dd HH:mm:ss.SSSZ</string>
+    <string name="options">Options</string>
+    <string name="about">About</string>
+    <string name="support_it">Support it</string>
+    <string name="satellite">Satellite</string>
+    <string name="map">Map</string>
+    <string name="version_name">1.0.0</string>
 </resources>
