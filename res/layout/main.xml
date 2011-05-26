@@ -8,9 +8,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:clickable="true"
-    android:apiKey="0fYhmgg-WB6ogXG-YVqys-_3u7SZZiW_cExaq5w" android:layout_weight="1"/>
-    <!-- debug key
-    android:apiKey="0fYhmgg-WB6r-5Xr5xcI_mJpU-bis5zxt_yrWbA" android:layout_weight="1"/> -->    
+    android:apiKey="0fYhmgg-WB6ogXG-YVqys-_3u7SZZiW_cExaq5w" android:layout_weight="1"/>    
 <TextView  
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
