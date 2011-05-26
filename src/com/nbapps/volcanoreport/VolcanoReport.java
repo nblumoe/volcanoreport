@@ -18,7 +18,6 @@ import javax.xml.parsers.SAXParserFactory;
 import org.xml.sax.InputSource;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,21 +43,27 @@ public class VolcanoReport extends MapActivity {
 	private ArrayList<VolcanoInfo> holoceneVolcanoList = null;
 	
 	private Boolean firstStart = true;
-    
+	
+	private PreferencesManager prefsManager;
+	
+	    
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        prefsManager = new PreferencesManager(this.getApplicationContext());
+        
         setContentView(R.layout.main);
         
         /*
          * load preferences
         */
         
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        
         try {
-			Date localWeeklyReportDate = new SimpleDateFormat().parse(preferences.getString("localWeeklyReportDate", "0"));
-			firstStart = preferences.getBoolean("firstStart", true);
+			Date localWeeklyReportDate = new SimpleDateFormat().parse(prefsManager.getLocalWeeklyReportDate());
+			firstStart = prefsManager.isFirstStart();
 			Log.d("VOLCANO_DEBUG", localWeeklyReportDate.toString());
 		} catch (ParseException e) {
 			Log.d("VOLCANO_DEBUG","Error while reading preferences:" + e);
@@ -66,7 +71,7 @@ public class VolcanoReport extends MapActivity {
 		
         
         mapView = (MapView)findViewById(R.id.mapview);
-        mapView.setSatellite(true);
+        mapView.setSatellite(prefsManager.isSatelliteMapMode());
         mapView.setBuiltInZoomControls(true);
         mapView.invalidate();
         
@@ -119,16 +124,21 @@ public class VolcanoReport extends MapActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem){
     	switch(menuItem.getItemId()) {
-    	case R.id.about:
+//    	case R.id.about:
+//    		return true;
+    	case R.id.mapmode:
+            if (mapView.isSatellite()) {
+            	mapView.setSatellite(false);
+            	prefsManager.setSatelliteMapMode(false);
+            }
+            else {
+            	mapView.setSatellite(true);
+            	prefsManager.setSatelliteMapMode(true);
+            }
+            	            
     		return true;
-    	case R.id.mapmode_map:
-            mapView.setSatellite(false);            
-    		return true;
-    	case R.id.mapmode_satellite:
-            mapView.setSatellite(true);
-    		return true;
-		case R.id.support_it:
-			return true;
+//		case R.id.support_it:
+//			return true;
 		default:
 			return super.onOptionsItemSelected(menuItem);
     	}    	    	
@@ -148,12 +158,8 @@ public class VolcanoReport extends MapActivity {
 			} catch (Exception e) {
 				Log.d("VOLCANO_DEBUG", "Exception: " + e);
 			}
-			SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-			SharedPreferences.Editor editor = preferences.edit();
-			editor.putString("localWeeklyReportDate",
-					new SimpleDateFormat().format(new Date()));
-			editor.putBoolean("firstStart", false);
-			editor.commit();			
+			prefsManager.setLocalWeeklyReportDate(new SimpleDateFormat().format(new Date()));
+			prefsManager.setFirstStart(false);
 		} else {
 			new Thread() {
 				public void run() {
@@ -161,11 +167,8 @@ public class VolcanoReport extends MapActivity {
 							.getString(R.string.urlWeeklyReport),
 							getResources()
 									.getString(R.string.localWeeklyReport));
-					SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-					SharedPreferences.Editor editor = preferences.edit();
-					editor.putString("localWeeklyReportDate",
-							new SimpleDateFormat().format(new Date()));
-					editor.commit();
+					prefsManager.setLocalWeeklyReportDate(new SimpleDateFormat().format(new Date()));
+					prefsManager.setFirstStart(false);
 				}
 			}.start();
 		}
