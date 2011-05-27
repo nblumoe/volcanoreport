@@ -75,7 +75,7 @@ public class VolcanoReport extends MapActivity {
         mapView.setBuiltInZoomControls(true);
         mapView.invalidate();
         
-        volcanoIcon = this.getResources().getDrawable(R.drawable.volcano_eruption);
+        volcanoIcon = this.getResources().getDrawable(R.drawable.volcano_eruption2_red);
         mapOverlays = mapView.getOverlays();
         weeklyOverlay = new VolcanoOverlay(volcanoIcon, this);
         
