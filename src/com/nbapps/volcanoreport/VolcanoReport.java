@@ -90,16 +90,13 @@ public class VolcanoReport extends MapActivity {
          * TODO: change back to kml and use WebView.loadData() for description
          *        -> link
          *  
-         * TODO: implement menu with map settings, about dialog, copyright
+         * TODO: implement changeable volcano icons
          * 
          * TODO: implement list view
          * 
-         * TODO: implement donation
+         * TODO: implement archive
          * 
-         * TODO: create logos and screenshots
-         * 
-         * TODO: implement earthquakes?
-         *  
+         * TODO: implement links to volcano details (smithsonian site)
          */
 
 
