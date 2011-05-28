@@ -103,15 +103,13 @@ public class VolcanoReport extends MapActivity {
         /*
          * DATABASE 
          */
-        
-        volcanoDB = new VolcanoDB(this);
-        volcanoDB.getWritableDatabase();
-
+        volcanoDB = new VolcanoDB(this);        
 
         downloadVolcanoLists();
 		updateVolcanoLists();
 		updateOverlay();
 
+        volcanoDB.setVolcanicActivity(weeklyVolcanoList.get(1));
 	}
     
     @Override
