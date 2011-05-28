@@ -9,12 +9,12 @@ import org.xml.sax.helpers.DefaultHandler;
 public class VolcanoXMLHandler extends DefaultHandler {
 
 	protected String currentValue = "";
-	protected VolcanoInfo currentVolcanoInfo = null;
-	public static ArrayList<VolcanoInfo> volcanoList = null;
+	protected VolcanicActivity currentVolcanoInfo = null;
+	public static ArrayList<VolcanicActivity> volcanoList = null;
 	
 	@Override
 	public void startDocument() {
-		volcanoList = new ArrayList<VolcanoInfo>();
+		volcanoList = new ArrayList<VolcanicActivity>();
 	}
 	
 	@Override
@@ -22,7 +22,7 @@ public class VolcanoXMLHandler extends DefaultHandler {
 			Attributes attributes) throws SAXException {
 
 		if (localName.equalsIgnoreCase("item")) {
-			currentVolcanoInfo = new VolcanoInfo();
+			currentVolcanoInfo = new VolcanicActivity();
 		}
 
 	}

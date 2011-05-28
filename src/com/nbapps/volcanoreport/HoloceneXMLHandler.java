@@ -11,7 +11,7 @@ public class HoloceneXMLHandler extends VolcanoXMLHandler {
 			Attributes attributes) throws SAXException {
 
 		if (localName.equalsIgnoreCase("placemark")) {
-			currentVolcanoInfo = new VolcanoInfo();
+			currentVolcanoInfo = new VolcanicActivity();
 		}
 
 	}

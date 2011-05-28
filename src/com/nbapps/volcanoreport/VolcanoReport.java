@@ -39,12 +39,13 @@ public class VolcanoReport extends MapActivity {
 	private List<Overlay> mapOverlays;
     private VolcanoOverlay weeklyOverlay;
 	
-	private ArrayList<VolcanoInfo> weeklyVolcanoList = null;
-	private ArrayList<VolcanoInfo> holoceneVolcanoList = null;
+	private ArrayList<VolcanicActivity> weeklyVolcanoList = null;
+	private ArrayList<VolcanicActivity> holoceneVolcanoList = null;
 	
 	private Boolean firstStart = true;
 	
 	private PreferencesManager prefsManager;
+	private VolcanoDB volcanoDB;
 	
 	    
     /** Called when the activity is first created. */
@@ -99,6 +100,12 @@ public class VolcanoReport extends MapActivity {
          * TODO: implement links to volcano details (smithsonian site)
          */
 
+        /*
+         * DATABASE 
+         */
+        
+        volcanoDB = new VolcanoDB(this);
+        volcanoDB.getWritableDatabase();
 
 
         downloadVolcanoLists();
@@ -254,5 +261,11 @@ public class VolcanoReport extends MapActivity {
 		intent.putExtra("DESCRIPTION", weeklyVolcanoList.get(index).getDescription());
 		intent.putExtra("LINK", weeklyVolcanoList.get(index).getLink());
 		this.startActivity(intent);
+	}
+
+	@Override
+	protected void onDestroy() {
+		volcanoDB.close();
+		super.onDestroy();
 	}
 }
