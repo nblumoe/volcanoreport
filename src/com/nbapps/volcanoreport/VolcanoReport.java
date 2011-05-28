@@ -1,21 +1,10 @@
 package com.nbapps.volcanoreport;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.zip.ZipFile;
-
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.InputSource;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -124,8 +113,6 @@ public class VolcanoReport extends MapActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem){
     	switch(menuItem.getItemId()) {
-//    	case R.id.about:
-//    		return true;
     	case R.id.mapmode:
             if (mapView.isSatellite()) {
             	mapView.setSatellite(false);
@@ -135,10 +122,7 @@ public class VolcanoReport extends MapActivity {
             	mapView.setSatellite(true);
             	prefsManager.setSatelliteMapMode(true);
             }
-            	            
     		return true;
-//		case R.id.support_it:
-//			return true;
 		default:
 			return super.onOptionsItemSelected(menuItem);
     	}    	    	
