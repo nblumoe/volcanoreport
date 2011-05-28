@@ -198,21 +198,9 @@ public class VolcanoReport extends MapActivity {
 	
 	private void updateWeeklyVolcanoList(){
 		// parse weekly report
-		try {
-			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-			SAXParser parser = parserFactory.newSAXParser();
-			File file = new File(getResources().getString(R.string.localWeeklyReport));
-			FileInputStream inputStream = new FileInputStream(file);
-			Reader reader = new InputStreamReader(inputStream, "ISO-8859-1");
-			InputSource is = new InputSource(reader);
-			is.setEncoding("ISO-8859-1");
-			VolcanoXMLHandler xmlHandler = new VolcanoXMLHandler();
-			parser.parse(is, xmlHandler);
-		} catch (Exception e) {
-			Log.d("VOLCANO_DEBUG","XML Parser Exception: " +e);
-		}
-		weeklyVolcanoList = VolcanoXMLHandler.volcanoList;
 		WeeklyReport weeklyReport = new WeeklyReportXMLParser().parse(getResources().getString(R.string.localWeeklyReport));
+		weeklyVolcanoList = weeklyReport.getVolcanicActivities();
+		volcanoDB.setWeeklyReport(weeklyReport);
 	}
 	
 	private void updateHoloceneVolcanoList() {
