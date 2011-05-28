@@ -12,6 +12,9 @@ public class WeeklyReport {
 	public void setVolcanicActivities(ArrayList<VolcanicActivity> volcanicActivities) {
 		this.volcanicActivities = volcanicActivities;
 	}
+	public void addVolcanicActivity(VolcanicActivity volcanicActivity) {
+		this.volcanicActivities.add(volcanicActivity);
+	}
 	public String getPubDate() {
 		return pubDate;
 	}
