@@ -40,7 +40,6 @@ public class VolcanoReport extends MapActivity {
     private VolcanoOverlay weeklyOverlay;
 	
 	private ArrayList<VolcanicActivity> weeklyVolcanoList = null;
-	private ArrayList<VolcanicActivity> holoceneVolcanoList = null;
 	
 	private Boolean firstStart = true;
 	
@@ -146,7 +145,6 @@ public class VolcanoReport extends MapActivity {
     }
     private void downloadVolcanoLists() {
     	downloadWeeklyVolcanoList();
-    	//downloadHoloceneVolcanoList();
     }
     
     private void downloadWeeklyVolcanoList() {
@@ -173,27 +171,10 @@ public class VolcanoReport extends MapActivity {
 				}
 			}.start();
 		}
-    }
-    
-    private void downloadHoloceneVolcanoList() {
-		// start new thread to download holocene volcanoes
-		new Thread() {
-			public void run() {
-				new ListDownloader()
-						.DownloadFromUrl(
-								getResources().getString(
-										R.string.urlHoloceneVolcanoes),
-								getResources().getString(
-										R.string.localHoloceneVolcanoesZipped));
-
-
-			}
-		}.start();
-    }
+    }    
     
 	private void updateVolcanoLists() {
 		updateWeeklyVolcanoList();
-		//updateHoloceneVolcanoList();
 	}
 	
 	private void updateWeeklyVolcanoList(){
@@ -203,27 +184,7 @@ public class VolcanoReport extends MapActivity {
 		volcanoDB.setWeeklyReport(weeklyReport);
 	}
 	
-	private void updateHoloceneVolcanoList() {
-		// parse holocene volcanoes
-		ZipFile zippedFile = null;
-		InputStream inputStream = null;
-		try {
-			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-			SAXParser parser = parserFactory.newSAXParser();
-			zippedFile = new ZipFile(getResources().getString(
-					R.string.localHoloceneVolcanoesZipped));
-			inputStream = zippedFile.getInputStream(zippedFile.entries()
-					.nextElement());
-			Reader reader = new InputStreamReader(inputStream, "UTF-8");
-			InputSource is = new InputSource(reader);
-			is.setEncoding("UTF-8");
-			HoloceneXMLHandler xmlHandler = new HoloceneXMLHandler();
-			parser.parse(is, xmlHandler);
-		} catch (Exception e) {
-			Log.d("VOLCANO_DEBUG","XML Parser Exception: " +e);
-		}
-		holoceneVolcanoList = HoloceneXMLHandler.volcanoList;		
-	}
+
 	
 	private void updateOverlay() {
 		for (int i = 0; i < weeklyVolcanoList.size(); i++) {
