@@ -55,7 +55,7 @@ public class WeeklyReportXMLHandler extends DefaultHandler {
 		}
 		else if (localName.equalsIgnoreCase("item")) {
 			weeklyReport.addVolcanicActivity(currentVolcanoActivity);
-			currentVolcanoActivity=null;
+			//currentVolcanoActivity=null;
 		}
 		currentValue = "";
 	}

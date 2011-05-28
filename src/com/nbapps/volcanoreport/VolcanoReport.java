@@ -109,7 +109,6 @@ public class VolcanoReport extends MapActivity {
 		updateVolcanoLists();
 		updateOverlay();
 
-        volcanoDB.setVolcanicActivity(weeklyVolcanoList.get(1));
 	}
     
     @Override
@@ -212,7 +211,8 @@ public class VolcanoReport extends MapActivity {
 		} catch (Exception e) {
 			Log.d("VOLCANO_DEBUG","XML Parser Exception: " +e);
 		}
-		weeklyVolcanoList = VolcanoXMLHandler.volcanoList;		
+		weeklyVolcanoList = VolcanoXMLHandler.volcanoList;
+		WeeklyReport weeklyReport = new WeeklyReportXMLParser().parse(getResources().getString(R.string.localWeeklyReport));
 	}
 	
 	private void updateHoloceneVolcanoList() {

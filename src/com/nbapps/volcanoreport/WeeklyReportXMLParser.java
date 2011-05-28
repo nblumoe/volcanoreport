@@ -16,7 +16,7 @@ public class WeeklyReportXMLParser {
 	
 	private static final String XML_ENCODING = "ISO-8859-1";
 	
-	private WeeklyReport parse(String filename){
+	public WeeklyReport parse(String filename){
 		// parse weekly report
 		try {
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
@@ -26,11 +26,12 @@ public class WeeklyReportXMLParser {
 			Reader reader = new InputStreamReader(inputStream, XML_ENCODING);
 			InputSource is = new InputSource(reader);
 			is.setEncoding(XML_ENCODING);
-			VolcanoXMLHandler xmlHandler = new VolcanoXMLHandler();
+			
+			WeeklyReportXMLHandler xmlHandler = new WeeklyReportXMLHandler();
 			parser.parse(is, xmlHandler);
 		} catch (Exception e) {
 			Log.d("VOLCANO_DEBUG","XML Parser Exception: " +e);
 		}
-		weeklyVolcanoList = VolcanoXMLHandler.volcanoList;		
+		return WeeklyReportXMLHandler.weeklyReport;		
 	}
 }

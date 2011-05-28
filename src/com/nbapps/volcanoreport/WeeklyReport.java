@@ -3,7 +3,7 @@ package com.nbapps.volcanoreport;
 import java.util.ArrayList;
 
 public class WeeklyReport {
-	private ArrayList<VolcanicActivity> volcanicActivities;
+	private ArrayList<VolcanicActivity> volcanicActivities = new ArrayList<VolcanicActivity>();
 	private String pubDate;
 	
 	public ArrayList<VolcanicActivity> getVolcanicActivities() {
