@@ -1,3 +1,21 @@
+/*
+ * TODO: load volcano overlay from database, download new file if necessary
+ * 
+ * TODO: re-implement holocene volcanoes
+ * 
+ * TODO: new icon for volcanoes with new unrest
+ * 
+ * TODO: change back to kml and use WebView.loadData() for description
+ *        -> link
+ *  
+ * TODO: implement changeable volcano icons
+ * 
+ * TODO: implement list view
+ * 
+ * TODO: implement archive
+ * 
+ * TODO: implement links to volcano details (smithsonian site)
+ */
 package com.nbapps.volcanoreport;
 
 import java.text.ParseException;
@@ -40,16 +58,13 @@ public class VolcanoReport extends MapActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
         prefsManager = new PreferencesManager(this.getApplicationContext());
-        
+        volcanoDB = new VolcanoDB(this);
         setContentView(R.layout.main);
         
-        /*
-         * load preferences
-        */
-        
-        
+		/*
+		 * load preferences
+		 */
         try {
 			Date localWeeklyReportDate = new SimpleDateFormat().parse(prefsManager.getLocalWeeklyReportDate());
 			firstStart = prefsManager.isFirstStart();
@@ -58,44 +73,23 @@ public class VolcanoReport extends MapActivity {
 			Log.d("VOLCANO_DEBUG","Error while reading preferences:" + e);
 		}
 		
-        
+        /*
+         * initialize map view
+         */
         mapView = (MapView)findViewById(R.id.mapview);
         mapView.setSatellite(prefsManager.isSatelliteMapMode());
         mapView.setBuiltInZoomControls(true);
         mapView.invalidate();
-        
         volcanoIcon = this.getResources().getDrawable(R.drawable.volcano_eruption2_red);
         mapOverlays = mapView.getOverlays();
         weeklyOverlay = new VolcanoOverlay(volcanoIcon, this);
-        
-         /*
-          * TODO: check for valid local kml file, start update if new file is available, this should replace firstStart checke 
-          * TODO: store map mode in preferences
-          * 
-          * TODO: re-implement holocene volcanoes
-         * 
-         * TODO: new icon for volcanoes with new unrest
-         * 
-         * TODO: change back to kml and use WebView.loadData() for description
-         *        -> link
-         *  
-         * TODO: implement changeable volcano icons
-         * 
-         * TODO: implement list view
-         * 
-         * TODO: implement archive
-         * 
-         * TODO: implement links to volcano details (smithsonian site)
-         */
-
-        /*
-         * DATABASE 
-         */
-        volcanoDB = new VolcanoDB(this);        
 
         downloadVolcanoLists();
 		updateVolcanoLists();
 		updateOverlay();
+		
+		// TESTING DB
+		Log.d("VOLCANO_DEBUG","is outdated?" + volcanoDB.isOutdated());
 
 	}
     
@@ -165,7 +159,6 @@ public class VolcanoReport extends MapActivity {
 		// parse weekly report
 		WeeklyReport weeklyReport = new WeeklyReportXMLParser().parse(getResources().getString(R.string.localWeeklyReport));
 		weeklyVolcanoList = weeklyReport.getVolcanicActivities();
-		volcanoDB.setWeeklyReport(weeklyReport);
 	}
 	
 

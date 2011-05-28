@@ -1,11 +1,17 @@
 package com.nbapps.volcanoreport;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 
 public class VolcanoDB extends SQLiteOpenHelper {
     
@@ -77,6 +83,33 @@ public class VolcanoDB extends SQLiteOpenHelper {
 			this.setVolcanicActivity(volcanicActivity, reportid);
 		}
 		return reportid;
+	}
+	
+	public Boolean isOutdated() {
+		// get time difference in milliseconds
+		long dateDiff = new Date().getTime() - getMostRecentPubdate().getTime();
+		// check if time difference is larger than 7 days
+		return (dateDiff>7*24*60*60*1000);				
+	}
+
+	private Date getMostRecentPubdate() {
+		Cursor cursor = getReadableDatabase().query(REPORTS_TABLE_NAME, new String[]{REPORTS_PUBDATE_COLUMN}, null, null, null, null, null);
+		Date mostRecentPubdate = new Date(0);
+		Date newDate = null;
+		while (cursor.moveToNext()) {
+			String dateString = cursor.getString(cursor
+					.getColumnIndex(REPORTS_PUBDATE_COLUMN));
+			try {
+				newDate = new SimpleDateFormat(
+						"\nEEE, dd MMM yyyy hh:mm:ss ZZZZZ").parse(dateString);
+			} catch (ParseException e) {
+				Log.d("VOLCANO_DEBUG", "DateFormat pasing error: " + e);
+			}
+			if (newDate.after(mostRecentPubdate))
+				mostRecentPubdate = newDate;
+		}
+		cursor.close();
+		return mostRecentPubdate;
 	}
 
 }
