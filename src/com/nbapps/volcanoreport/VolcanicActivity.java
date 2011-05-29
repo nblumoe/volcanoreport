@@ -32,6 +32,10 @@ public class VolcanicActivity {
 		Float recalcValue = Float.parseFloat(latitude)*1000000;
 		this.latitude = Math.round(recalcValue);
 	}
+	
+	public void setLatitude(int latitude) {
+		this.latitude = latitude;
+	}
 
 
 	public int getLongitude() {
@@ -44,6 +48,9 @@ public class VolcanicActivity {
 		this.longitude = Math.round(recalcValue);
 	}
 
+	public void setLongitude(int longitude) {
+		this.longitude = longitude;
+	}
 
 	public String getDescription() {
 		return description;

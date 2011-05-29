@@ -84,14 +84,16 @@ public class VolcanoReport extends MapActivity {
         mapOverlays = mapView.getOverlays();
         weeklyOverlay = new VolcanoOverlay(volcanoIcon, this);
 
-        downloadVolcanoLists();
+        /*
+         * get new data if necessary
+         */
+        if (volcanoDB.isOutdated()) {
+        	downloadVolcanoLists();
+        }        
 		updateVolcanoLists();
 		updateOverlay();
 		
-		// TESTING DB
-		Log.d("VOLCANO_DEBUG","is outdated?" + volcanoDB.isOutdated());
-
-	}
+    }
     
     @Override
     protected boolean isRouteDisplayed() {
@@ -157,8 +159,9 @@ public class VolcanoReport extends MapActivity {
 	
 	private void updateWeeklyVolcanoList(){
 		// parse weekly report
-		WeeklyReport weeklyReport = new WeeklyReportXMLParser().parse(getResources().getString(R.string.localWeeklyReport));
-		weeklyVolcanoList = weeklyReport.getVolcanicActivities();
+		//WeeklyReport weeklyReport = new WeeklyReportXMLParser().parse(getResources().getString(R.string.localWeeklyReport));
+		//weeklyVolcanoList = weeklyReport.getVolcanicActivities();
+		weeklyVolcanoList = volcanoDB.getMostRecentReport().getVolcanicActivities();
 	}
 	
 
