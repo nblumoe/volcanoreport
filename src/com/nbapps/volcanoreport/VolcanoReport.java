@@ -17,6 +17,10 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.InputSource;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.SearchManager.OnDismissListener;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -46,6 +50,7 @@ public class VolcanoReport extends MapActivity {
 	
 	private PreferencesManager prefsManager;
 	
+	static final int DIALOG_NONETWORKWARNING_ID = 1;
 	    
     /** Called when the activity is first created. */
     @Override
@@ -103,11 +108,49 @@ public class VolcanoReport extends MapActivity {
          */
 
 
+        tryGettingVolcanoLists();
+	}
+    
+    protected void tryGettingVolcanoLists() {
+    	downloadVolcanoLists();
+        updateVolcanoLists();
+        if (weeklyVolcanoList!=null){
+        	updateOverlay();
+        }
+        else {
+        	showDialog(DIALOG_NONETWORKWARNING_ID);
+        }       
+    }
+    
+    @Override
+    protected Dialog onCreateDialog(int id){
+		Dialog dialog;
+		switch (id) {
+		case DIALOG_NONETWORKWARNING_ID:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(
+					"Sorry, no valid file with volcano information is available. Please ensure a working internet connection and click 'Retry'.")
+					.setCancelable(false)
+					.setPositiveButton("Retry",
+							new DialogInterface.OnClickListener() {
 
-        downloadVolcanoLists();
-		updateVolcanoLists();
-		updateOverlay();
-
+								public void onClick(DialogInterface dialog,
+										int which) {
+									dialog.dismiss();
+								}
+							});
+			dialog = builder.create();
+			dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+				public void onDismiss(DialogInterface dialog) {
+					tryGettingVolcanoLists();
+				}
+			}
+			);
+			break;
+		default:
+			dialog = null;
+		}
+		return dialog;
 	}
     
     @Override
