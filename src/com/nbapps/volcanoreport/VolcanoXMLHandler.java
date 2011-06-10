@@ -19,8 +19,12 @@ public class VolcanoXMLHandler extends DefaultHandler {
 	protected String currentValue = "";
 	protected VolcanoInfo currentVolcanoInfo = null;
 	public static ArrayList<VolcanoInfo> volcanoList = null;
-	public static Date volcanoListDate = new Date(0);
+	public static Date parsedVolcanoListDate = new Date(0);
+	public static Date currentVolcanoListDate = new Date(0);
 	
+	public void VolcanoXMLHanlder (Date currentListDate) {
+		currentVolcanoListDate = currentListDate;
+	}
 	@Override
 	public void startDocument() {
 		volcanoList = new ArrayList<VolcanoInfo>();
@@ -55,10 +59,10 @@ public class VolcanoXMLHandler extends DefaultHandler {
 		else if (localName.equalsIgnoreCase("pubDate")) {
 			SimpleDateFormat df = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.US);
 			try {
-				volcanoListDate = df.parse(currentValue);
+				parsedVolcanoListDate = df.parse(currentValue.replaceAll("\\p{Cntrl}", ""));
 			} catch (ParseException e) {
-				Log.d("DEBUG", currentValue+"!");
-				Log.d("DEBUG", e.toString());
+				Log.d("VOLCANO_DEBUG", currentValue);
+				Log.d("VOLCANO_DEBUG", e.toString());
 			}
 		}
 		else if (localName.equalsIgnoreCase("description")) {
