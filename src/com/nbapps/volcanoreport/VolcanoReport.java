@@ -2,15 +2,11 @@ package com.nbapps.volcanoreport;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.zip.ZipFile;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -19,6 +15,7 @@ import org.xml.sax.InputSource;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -44,12 +41,10 @@ public class VolcanoReport extends MapActivity {
 
 	private ArrayList<VolcanoInfo> weeklyVolcanoList = null;
 
-	private Boolean firstStart = true;
-	private Boolean refreshVolcanoList = true;
-
 	private PreferencesManager prefsManager;
 
 	static final int DIALOG_NONETWORKWARNING_ID = 1;
+	static final int DIALOG_DOWNLOADING_ID = 2;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -63,15 +58,6 @@ public class VolcanoReport extends MapActivity {
 		/*
 		 * load preferences
 		 */
-
-		try {
-			Date localWeeklyReportDate = new SimpleDateFormat()
-					.parse(prefsManager.getLocalWeeklyReportDate());
-			firstStart = prefsManager.isFirstStart();
-			Log.d("VOLCANO_DEBUG", localWeeklyReportDate.toString());
-		} catch (ParseException e) {
-			Log.d("VOLCANO_DEBUG", "Error while reading preferences:" + e);
-		}
 
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setSatellite(prefsManager.isSatelliteMapMode());
@@ -110,16 +96,25 @@ public class VolcanoReport extends MapActivity {
 	}
 
 	protected void tryGettingVolcanoLists() {
-		downloadVolcanoLists();
-		if (refreshVolcanoList) {
-			updateVolcanoLists();
-			if (weeklyVolcanoList != null) {
-				updateOverlay();
-			} else {
-				showDialog(DIALOG_NONETWORKWARNING_ID);
+		// try to parse local file
+		if (parseWeeklyVolcanoXML()) {
+			// get date of the parsed xml
+			Date now = new Date();
+			long dateDiff = (now.getTime() - VolcanoXMLHandler.parsedVolcanoListDate
+					.getTime());
+			// is it older than 7 days?
+			if ((dateDiff / 1000 / 60 / 60 / 24) > 7) {
+				// get new file and parse it
+				downloadWeeklyVolcanoXML();
 			}
-			refreshVolcanoList = false;
-			prefsManager.setCurrentListDate(VolcanoXMLHandler.parsedVolcanoListDate);
+			// no local file could be parsed, get new file and parse it
+		} else {
+			downloadWeeklyVolcanoXML();
+		}
+		// check if volcano list is valid update overlays
+		if (weeklyVolcanoList != null) {
+			// create google maps overlays
+			updateOverlay();
 		}
 	}
 
@@ -146,6 +141,10 @@ public class VolcanoReport extends MapActivity {
 					tryGettingVolcanoLists();
 				}
 			});
+			break;
+		case DIALOG_DOWNLOADING_ID:
+			dialog = ProgressDialog.show(this, "",
+					"Downloading volcano data. Please wait...", true);
 			break;
 		default:
 			dialog = null;
@@ -187,45 +186,26 @@ public class VolcanoReport extends MapActivity {
 		}
 	}
 
-	private void downloadVolcanoLists() {
-		downloadWeeklyVolcanoList();
-	}
-
-	private void downloadWeeklyVolcanoList() {
-		// start new thread to download weekly report
-		if (firstStart == true) {
-			try {
-				new ListDownloader().DownloadFromUrl(
-						getResources().getString(R.string.urlWeeklyReport),
-						getResources().getString(R.string.localWeeklyReport));
-			} catch (Exception e) {
-				Log.d("VOLCANO_DEBUG", "Exception: " + e);
-			}
-			prefsManager.setLocalWeeklyReportDate(new SimpleDateFormat()
-					.format(new Date()));
-			prefsManager.setFirstStart(false);
-		} else {
-			new Thread() {
-				public void run() {
+	private void downloadWeeklyVolcanoXML() {
+		showDialog(DIALOG_DOWNLOADING_ID);
+		new Thread(new Runnable() {
+			public void run() {
+				try {
 					new ListDownloader().DownloadFromUrl(getResources()
 							.getString(R.string.urlWeeklyReport),
 							getResources()
 									.getString(R.string.localWeeklyReport));
-					prefsManager
-							.setLocalWeeklyReportDate(new SimpleDateFormat()
-									.format(new Date()));
-					prefsManager.setFirstStart(false);
+				} catch (Exception e) {
+					Log.d("VOLCANO_DEBUG", "Exception: " + e);
 				}
-			}.start();
-		}
+				parseWeeklyVolcanoXML();
+				updateOverlay();
+				dismissDialog(DIALOG_DOWNLOADING_ID);
+			}
+		}).start();
 	}
 
-
-	private void updateVolcanoLists() {
-		updateWeeklyVolcanoList();
-	}
-
-	private void updateWeeklyVolcanoList() {
+	private Boolean parseWeeklyVolcanoXML() {
 		// parse weekly report
 		try {
 			SAXParserFactory parserFactory = SAXParserFactory.newInstance();
@@ -240,8 +220,10 @@ public class VolcanoReport extends MapActivity {
 			parser.parse(is, xmlHandler);
 		} catch (Exception e) {
 			Log.d("VOLCANO_DEBUG", "XML Parser Exception: " + e);
+			return false;
 		}
 		weeklyVolcanoList = VolcanoXMLHandler.volcanoList;
+		return true;
 	}
 
 	private void updateOverlay() {
