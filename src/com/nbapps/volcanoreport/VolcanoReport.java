@@ -62,6 +62,8 @@ public class VolcanoReport extends MapActivity {
 		mapView = (MapView) findViewById(R.id.mapview);
 		mapView.setSatellite(prefsManager.isSatelliteMapMode());
 		mapView.setBuiltInZoomControls(true);
+		mapView.getController().setCenter(new GeoPoint(0, 0));
+		mapView.getController().setZoom(2);
 		mapView.invalidate();
 
 		volcanoIcon = this.getResources().getDrawable(
@@ -237,6 +239,7 @@ public class VolcanoReport extends MapActivity {
 
 		}
 		mapOverlays.add(weeklyOverlay);
+		mapView.postInvalidate();
 	}
 
 	public void showVolcanoDetails(int index) {
