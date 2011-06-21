@@ -228,6 +228,7 @@ public class VolcanoReport extends MapActivity {
 	}
 
 	private void updateOverlay() {
+		weeklyOverlay = new VolcanoOverlay(volcanoIcon, this);
 		for (int i = 0; i < weeklyVolcanoList.size(); i++) {
 			GeoPoint point = new GeoPoint(weeklyVolcanoList.get(i)
 					.getLatitude(), weeklyVolcanoList.get(i).getLongitude());
@@ -237,6 +238,7 @@ public class VolcanoReport extends MapActivity {
 			weeklyOverlay.addOverlay(overlayItem);
 
 		}
+		mapOverlays.clear();
 		mapOverlays.add(weeklyOverlay);
 		mapView.postInvalidate();
 	}
