@@ -20,12 +20,6 @@ public class ListDownloader {
 			URL url = new URL(fileURL);
 			File file = new File(fileName);
 			
-			
-            Log.d("ImageManager", "download begining");
-            Log.d("ImageManager", "download url:" + url);
-            Log.d("ImageManager", "downloaded file name:" + fileName);
-
-			
 			URLConnection urlConnection = url.openConnection();
 			/*
 			 * Create Input Streams
